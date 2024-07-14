@@ -1,23 +1,41 @@
-// Function to handle sending a message
-function sendMessage() {
-  const messageInput = document.getElementById('message-input');
-  const message = messageInput.value.trim();
-  if (message !== '') {
-    const chatMessages = document.querySelector('.chat-messages');
-    const messageElement = document.createElement('div');
-    messageElement.classList.add('message');
-    messageElement.textContent = message;
-    chatMessages.appendChild(messageElement);
-    messageInput.value = '';
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+const apiKey = '96a320ea42674d05bc44a1b438f08e69';
+const newsContainer = document.getElementById('news-container');
+const categoryLinks = document.querySelectorAll('.category-link');
+
+// Function to fetch news articles from API
+function fetchNews(category = '') {
+  let url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`;
+  if (category) {
+    url = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${apiKey}`;
   }
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      const newsArticles = data.articles;
+      newsContainer.innerHTML = '';
+      newsArticles.forEach(article => {
+        const newsCard = document.createElement('div');
+        newsCard.className = 'news-card';
+        newsCard.innerHTML = `
+          <img src="${article.urlToImage}" alt="${article.title}">
+          <h2>${article.title}</h2>
+          <p>${article.description}</p>
+          <a href="${article.url}" target="_blank">Read more</a>
+        `;
+        newsContainer.appendChild(newsCard);
+      });
+    })
+    .catch(error => console.error(error));
 }
 
-// Event listener
-document.getElementById('send-button').addEventListener('click', sendMessage);
-document.getElementById('message-input').addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') {
+// Fetch news articles on page load
+fetchNews();
+
+// Add event listeners to category links
+categoryLinks.forEach(link => {
+  link.addEventListener('click', event => {
     event.preventDefault();
-    sendMessage();
-  }
+    const category = link.getAttribute('data-category');
+    fetchNews(category);
+  });
 });

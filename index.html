@@ -5,7 +5,98 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>News Website</title>
-    <link rel="stylesheet" href="style.css">
+   <!--  <link rel="stylesheet" href="style.css"> -->
+     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        
+        .navbar {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .navbar-toggler {
+            border: none;
+            background-color: transparent;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .navbar-toggler:hover {
+            background-color: #444;
+        }
+        
+        .navbar-nav {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 1rem;
+        }
+        
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            color: #ccc;
+        }
+        
+        .category-link {
+            cursor: pointer;
+        }
+        
+        #news-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .news-card {
+            margin: 1rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .news-card:hover {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .news-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .news-card h2 {
+            font-size: 1.5rem;
+            margin-top: 0;
+        }
+        
+        .news-card p {
+            font-size: 1rem;
+            color: #666;
+        }
+     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
@@ -40,6 +131,50 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        const apiKey = '96a320ea42674d05bc44a1b438f08e69';
+const newsContainer = document.getElementById('news-container');
+const categoryLinks = document.querySelectorAll('.category-link');
+
+// Function to fetch news articles from API
+fetchNews();
+function fetchNews(category = '') {
+  let url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`;
+  if (category) {
+    url = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${apiKey}`;
+  }
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      const newsArticles = data.articles;
+      newsContainer.innerHTML = '';
+      newsArticles.forEach(article => {
+        const newsCard = document.createElement('div');
+        newsCard.className = 'news-card';
+        newsCard.innerHTML = `
+          <img src="${article.urlToImage}" alt="${article.title}">
+          <h2>${article.title}</h2>
+          <p>${article.description}</p>
+          <a href="${article.url}" target="_blank">Read more</a>
+        `;
+        newsContainer.appendChild(newsCard);
+      });
+    })
+    .catch(error => console.error("error"));
+}
+
+
+// Fetch news articles on page load
+// fetchNews();
+
+// Add event listeners to category links
+categoryLinks.forEach(link => {
+  link.addEventListener('click', event => {
+    event.preventDefault();
+    const category = link.getAttribute('data-category');
+    fetchNews(category);
+  });
+});
+    </script>
 </body>
 </html>

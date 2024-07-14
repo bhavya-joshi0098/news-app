@@ -25,7 +25,7 @@ function fetchNews(category = '') {
         newsContainer.appendChild(newsCard);
       });
     })
-    .catch(error => console.error(error));
+    // .catch(error => console.error(error));
 }
 
 // Fetch news articles on page load

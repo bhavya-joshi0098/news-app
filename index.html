@@ -140,9 +140,9 @@ const categoryLinks = document.querySelectorAll('.category-link');
 fetchNews();
 function fetchNews(category = '') {
   let url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`;
-  if (category) {
-    url = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${apiKey}`;
-  }
+  //if (category) {
+  //  url = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${apiKey}`;
+  //}
   fetch(url)
     .then(response => response.json())
     .then(data => {
